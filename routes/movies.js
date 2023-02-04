@@ -1,33 +1,35 @@
 const express = require('express')
-const Joi = require('Joi')
 const router = express.Router()
-const genresService = require('../database/genres')
-
+const moviesService = require('../database/movies')
+const Joi = require('Joi')
 
 
 
 function validation(body){
 	const schema = {
-		name : Joi.string().min(3).required()
+		title : Joi.string().min(3).required(),
+		genreId : Joi.objectId().required(),
+		numberInStock : Joi.number().min(0).required(),
+		dailyRentalRate: Joi.number().min(0).required()
 	}
 	return Joi.validate(body,schema)
 }
 
 router.get('/',async (req,res)=>{ 
-	res.send(await genresService.getAll()) 
+	res.send(await moviesService.getAll()) 
 })
 
 router.get('/:id',async(req,res)=>{
-	const genre = await genresService.getOne(req.params.id)
-	if (!genre) return res.status(404).send('Genre Not Found')
-	res.send(genre)
+	const movie = await moviesService.getOne(req.params.id)
+	if (!movie) return res.status(404).send('Movie Not Found')
+	res.send(movie)
 })
 
 router.post('/',async(req,res)=>{
 	const validationResult = validation(req.body)
 	if (validationResult.error) return res.status(400).send(validationResult.error.details[0].message)
 	try {
-		const databaseResult = await genresService.post(req.body.name)
+		const databaseResult = await moviesService.post(req.body,res)
 		res.send(databaseResult)
 	} catch(ex) {
 		console.log('Error: ',ex)
@@ -37,13 +39,13 @@ router.post('/',async(req,res)=>{
 
 router.put('/:id',async(req,res)=>{
 
-	const genre = await genresService.getOne(req.params.id)
-	if (!genre) return res.status(404).send('Genre Not Found')
+	const movie = await moviesService.getOne(req.params.id)
+	if (!movie) return res.status(404).send('Movie Not Found')
 
 	const validationResult = validation(req.body)
 	if (validationResult.error) return res.status(400).send(validationResult.error.details[0].message)
 	try {
-		const databaseResult = await genresService.update(req.params.id,req.body.name)
+		const databaseResult = await moviesService.update(req.params.id,req.body)
 		res.send(databaseResult)
 	} catch(ex) {
 		console.log('Error: ',ex)
@@ -53,10 +55,10 @@ router.put('/:id',async(req,res)=>{
 
 router.delete('/:id',async(req,res)=>{
 
-	const genre = await genresService.getOne(req.params.id)
-	if (!genre) return res.status(404).send('Genre Not Found')
+	const movie = await moviesService.getOne(req.params.id)
+	if (!movie) return res.status(404).send('Movie Not Found')
 	try {
-		const result = await genresService.delete(req.params.id)
+		const result = await moviesService.delete(req.params.id)
 		res.send(result)
 	} catch(ex) {
 		console.log('Error: ',ex)

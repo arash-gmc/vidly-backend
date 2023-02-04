@@ -1,0 +1,1 @@
+mongod --dbpath C:\Dev_Tools\data\mongodb --storageEngine mmapv1
