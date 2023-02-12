@@ -1,5 +1,8 @@
 const express = require('express')
 const Joi = require('Joi')
+const auth = require('../middlewares/auth')
+const admin = require('../middlewares/admin')
+const validateId = require('../middlewares/validateId')
 const router = express.Router()
 const genresService = require('../database/genres')
 
@@ -23,7 +26,7 @@ router.get('/:id',async(req,res)=>{
 	res.send(genre)
 })
 
-router.post('/',async(req,res)=>{
+router.post('/',auth,async(req,res)=>{
 	const validationResult = validation(req.body)
 	if (validationResult.error) return res.status(400).send(validationResult.error.details[0].message)
 	try {
@@ -51,7 +54,7 @@ router.put('/:id',async(req,res)=>{
 	}	
 })
 
-router.delete('/:id',async(req,res)=>{
+router.delete('/:id',[auth,admin,validateId],async(req,res)=>{
 
 	const genre = await genresService.getOne(req.params.id)
 	if (!genre) return res.status(404).send('Genre Not Found')

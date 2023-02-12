@@ -54,7 +54,6 @@ router.put('/:id',async(req,res)=>{
 })
 
 router.delete('/:id',async(req,res)=>{
-
 	const movie = await moviesService.getOne(req.params.id)
 	if (!movie) return res.status(404).send('Movie Not Found')
 	try {
