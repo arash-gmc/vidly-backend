@@ -1,11 +1,11 @@
 const express = require('express')
 const Joi = require('Joi')
+//const amf = require('../middlewares/async')
 const auth = require('../middlewares/auth')
 const admin = require('../middlewares/admin')
 const validateId = require('../middlewares/validateId')
 const router = express.Router()
 const genresService = require('../database/genres')
-
 
 
 
@@ -16,9 +16,26 @@ function validation(body){
 	return Joi.validate(body,schema)
 }
 
-router.get('/',async (req,res)=>{ 
-	res.send(await genresService.getAll()) 
+
+
+router.get('/',async (req,res)=>{
+	throw Error('could not get genres')
+	res.send(await genresService.getAll())
 })
+
+// router.get('/',amf( async(req,res)=>{
+// 	res.send(await genresService.getAll())
+// }))
+
+
+// router.get('/',async (req,res,next)=>{
+// 	try {
+// 		res.send(await genresService.getAll())
+// 	} catch(e) {
+// 		next(e)
+// 	}   
+	 
+// })
 
 router.get('/:id',async(req,res)=>{
 	const genre = await genresService.getOne(req.params.id)
