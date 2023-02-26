@@ -6,12 +6,13 @@ const admin = require('../middlewares/admin')
 const validateId = require('../middlewares/validateId')
 const router = express.Router()
 const genresService = require('../database/genres')
+const mongoose = require('mongoose')
 
 
 
 function validation(body){
 	const schema = {
-		name : Joi.string().min(3).required()
+		name : Joi.string().min(5).required()
 	}
 	return Joi.validate(body,schema)
 }
@@ -19,7 +20,6 @@ function validation(body){
 
 
 router.get('/',async (req,res)=>{
-	throw Error('could not get genres')
 	res.send(await genresService.getAll())
 })
 
@@ -37,7 +37,7 @@ router.get('/',async (req,res)=>{
 	 
 // })
 
-router.get('/:id',async(req,res)=>{
+router.get('/:id',validateId,async(req,res)=>{
 	const genre = await genresService.getOne(req.params.id)
 	if (!genre) return res.status(404).send('Genre Not Found')
 	res.send(genre)
@@ -55,7 +55,7 @@ router.post('/',auth,async(req,res)=>{
 	}	
 })
 
-router.put('/:id',async(req,res)=>{
+router.put('/:id',auth,validateId,async(req,res)=>{
 
 	const genre = await genresService.getOne(req.params.id)
 	if (!genre) return res.status(404).send('Genre Not Found')
@@ -67,7 +67,7 @@ router.put('/:id',async(req,res)=>{
 		res.send(databaseResult)
 	} catch(ex) {
 		console.log('Error: ',ex)
-		res.send('There is a Problem with database connection!')
+		res.status(500).send('There is a Problem with database connection!')
 	}	
 })
 

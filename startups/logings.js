@@ -1,11 +1,11 @@
 const winston = require('winston')
-require('winston-mongodb')
+//require('winston-mongodb')
 require('express-async-errors')
 
 
 module.exports = function(){
 	winston.add(winston.transports.File,{filename:'logs.log',level:'warn'})
-	winston.add(winston.transports.MongoDB,{db:'mongodb://localhost/vidly',level:'error'})
+	//winston.add(winston.transports.MongoDB,{db:'mongodb://localhost/vidly',level:'error'})
 	process.on('uncaughtException',async(ex)=>{
 		console.log('!!---UNCAUGHT EXCEPTION---!!');
 		winston.error(ex.message,ex)
