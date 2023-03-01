@@ -1,10 +1,10 @@
 const express = require('express')
+const router = express.Router()
 const Joi = require('Joi')
 //const amf = require('../middlewares/async')
 const auth = require('../middlewares/auth')
 const admin = require('../middlewares/admin')
 const validateId = require('../middlewares/validateId')
-const router = express.Router()
 const genresService = require('../database/genres')
 const mongoose = require('mongoose')
 

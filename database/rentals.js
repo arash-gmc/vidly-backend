@@ -51,9 +51,22 @@ const rentalsSchema = new mongoose.Schema({
 	}	
 })
 
+rentalsSchema.statics.lookup = function(customerId,movieId){
+	return this.findOne({
+		'customers._id' : customerId,
+		'movies._id' : movieId
+	})
+}
+
+rentalsSchema.methods.return = async function(){
+	this.dateReturn = Date.now()
+	this.rentalFee = 
+		Math.ceil((this.dateReturn-this.dateOut)/(1000*3600*24))
+		*this.movies.dailyRentalRate ;
+	await this.save()
+}
 
 const Rentals = mongoose.model('Rentals',rentalsSchema);
-
 
 async function getAllRentals(){
 	const rentals = await Rentals.find().sort('-dateOut');
@@ -114,6 +127,7 @@ module.exports = {
 	getAll : getAllRentals,
 	getOne : getRentalById,
 	post : addRental,
-	delete : deleteRental
+	delete : deleteRental,
+	Rentals
 }
 
