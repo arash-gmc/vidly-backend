@@ -9,10 +9,7 @@ const inpVal = require('../middlewares/inputValidation')
 router.post('/',[auth,inpVal(schema)],async (req,res)=>{
 	const {movieId,customerId} = req.body
 	const rental = await Rentals.lookup(customerId,movieId)
-	// const rental = await Rentals.findOne({
-	// 	'customers._id' : customerId,
-	// 	'movies._id' : movieId
-	// })
+	
 	if (!rental) return res.status(404).send('rentel not found')
 	if (rental.dateReturn) return res.status(400).send('rentel already set')
 

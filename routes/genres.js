@@ -1,89 +1,38 @@
 const express = require('express')
 const router = express.Router()
-const Joi = require('Joi')
-//const amf = require('../middlewares/async')
 const auth = require('../middlewares/auth')
 const admin = require('../middlewares/admin')
 const validateId = require('../middlewares/validateId')
-const genresService = require('../database/genres')
 const mongoose = require('mongoose')
-
-
-
-function validation(body){
-	const schema = {
-		name : Joi.string().min(5).required()
-	}
-	return Joi.validate(body,schema)
-}
-
+const {Genres,joiSchema} = require('../database/genres')
+const inpVal = require('../middlewares/inputValidation')
 
 
 router.get('/',async (req,res)=>{
-	res.send(await genresService.getAll())
+	res.send(await Genres.find().sort('name'))
 })
 
-// router.get('/',amf( async(req,res)=>{
-// 	res.send(await genresService.getAll())
-// }))
-
-
-// router.get('/',async (req,res,next)=>{
-// 	try {
-// 		res.send(await genresService.getAll())
-// 	} catch(e) {
-// 		next(e)
-// 	}   
-	 
-// })
-
-router.get('/:id',validateId,async(req,res)=>{
-	const genre = await genresService.getOne(req.params.id)
-	if (!genre) return res.status(404).send('Genre Not Found')
+router.get('/:id',validateId(Genres),async(req,res)=>{
+	genre = res.instance
 	res.send(genre)
 })
 
-router.post('/',auth,async(req,res)=>{
-	const validationResult = validation(req.body)
-	if (validationResult.error) return res.status(400).send(validationResult.error.details[0].message)
-	try {
-		const databaseResult = await genresService.post(req.body.name)
-		res.send(databaseResult)
-	} catch(ex) {
-		console.log('Error: ',ex)
-		res.send('There is a Problem with database connection!')
-	}	
+router.post('/',[auth,inpVal(joiSchema)],async(req,res)=>{	
+	const genre = new Genres({name:req.body.name});
+	await genre.save()		
+	res.send(genre)	
 })
 
-router.put('/:id',auth,validateId,async(req,res)=>{
+router.put('/:id',[auth,inpVal(joiSchema),validateId(Genres)],async(req,res)=>{
 
-	const genre = await genresService.getOne(req.params.id)
-	if (!genre) return res.status(404).send('Genre Not Found')
-
-	const validationResult = validation(req.body)
-	if (validationResult.error) return res.status(400).send(validationResult.error.details[0].message)
-	try {
-		const databaseResult = await genresService.update(req.params.id,req.body.name)
-		res.send(databaseResult)
-	} catch(ex) {
-		console.log('Error: ',ex)
-		res.status(500).send('There is a Problem with database connection!')
-	}	
+	const result = await Genres.findByIdAndUpdate(req.params.id,{$set:{name:req.body.name}},{new:true})
+	res.send(result)	
 })
 
-router.delete('/:id',[auth,admin,validateId],async(req,res)=>{
-
-	const genre = await genresService.getOne(req.params.id)
-	if (!genre) return res.status(404).send('Genre Not Found')
-	try {
-		const result = await genresService.delete(req.params.id)
-		res.send(result)
-	} catch(ex) {
-		console.log('Error: ',ex)
-		res.send('There is a Problem with database connection!')
-	}	
+router.delete('/:id',[auth,admin,validateId(Genres)],async(req,res)=>{
 	
+	const result = await await Genres.findByIdAndRemove(req.params.id)
+	res.send(result)
 })
 
 module.exports = router
-

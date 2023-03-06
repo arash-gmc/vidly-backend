@@ -3,6 +3,7 @@ const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
 const _ = require('lodash')
 const bcrypt = require('bcrypt')
+const config = require('config')
 
 const userSchema = new mongoose.Schema ({
 	name: {
@@ -27,8 +28,10 @@ const userSchema = new mongoose.Schema ({
 	isAdmin : Boolean
 })
 
+
 userSchema.methods.generateToken = function(){
-	return jwt.sign({_id:this._id,isAdmin:this.isAdmin,email:this.email},'Arash1234')
+	const jwtPrivateKey = config.get('jwtPrivateKey')
+	return jwt.sign({_id:this._id,isAdmin:this.isAdmin,email:this.email},jwtPrivateKey)
 }
 
 const Users = mongoose.model('Users',userSchema)
