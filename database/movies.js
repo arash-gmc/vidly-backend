@@ -12,61 +12,18 @@ const moviesSchema = new mongoose.Schema({
 
 const Movies = mongoose.model('Movies',moviesSchema);
 
-
-async function getAllMovies(){
-	const movies = await Movies.find();
-	return movies
+const joiSchema = function (body){
+	const schema = {
+		title : Joi.string().min(3).required(),
+		genreId : Joi.objectId().required(),
+		numberInStock : Joi.number().min(0).required(),
+		dailyRentalRate: Joi.number().min(0).required()
+	}
+	return Joi.validate(body,schema)
 }
 
-async function getMovieById(id){
-	const movie = await Movies.findById(id)
-	return movie
-}
-
-async function addMovie(body,res){
-	const {title,genreId,numberInStock,dailyRentalRate} = body
-	const genre = await Genres.findById(genreId)
-	if (!genre) return res.status(404).send('Genre Not Found')
-	
-	movie = new Movies ({
-		title,
-		genre:new Genres({
-			_id : genre._id,
-			name: genre.name
-		}),
-		numberInStock,
-		dailyRentalRate
-	})
-	await movie.save();
-	return movie
-}
-
-async function updateMovie(id,body){
-	const {title,genreId,numberInStock,dailyRentalRate} = body
-	const genre = await Genres.findById(genreId)
-	if (!genre) return res.status(404).send('Genre Not Found')
-	const movie = await Movies.findByIdAndUpdate(id,{$set:{
-		title,
-		genre:{
-			_id: genre._id,
-			name: genre.name
-		},
-		numberInStock,
-		dailyRentalRate
-	}},{new:true}) 
-	return movie
-}
-
-async function deleteMovie(id){
-	const movie = await Movies.findByIdAndRemove(id)
-	return movie
-}
 
 module.exports = {
-	getAll : getAllMovies,
-	getOne : getMovieById,
-	post : addMovie,
-	update : updateMovie,
-	delete : deleteMovie,
-	Movies
+	Movies,
+	joiSchema
 }

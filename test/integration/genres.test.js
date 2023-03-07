@@ -10,6 +10,7 @@ let id
 describe('/api/genres',()=>{
 	beforeEach(async()=>{
 		server = require('../../index')
+		await Genres.remove({})
 	})
 	afterEach(async()=>{
 		await server.close();

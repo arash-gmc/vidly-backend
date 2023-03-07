@@ -4,8 +4,6 @@ const Joi = require('Joi');
 const bcrypt = require('bcrypt')
 const {Users} = require('../database/users');
 
-//const {validation,addUser} = require('../database/users')
-
 
 router.post('/',async (req,res)=>{
 	const result = validate(req.body)

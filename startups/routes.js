@@ -10,8 +10,8 @@ const error = require('../middlewares/error')
 
 module.exports = function(app){
 	app.use(express.json())
-	app.use('/api/genres',genres)
 	app.use('/api/movies',movies)
+	app.use('/api/genres',genres)
 	app.use('/api/customers',customers)
 	app.use('/api/rentals',rentals)
 	app.use('/api/users',users)
