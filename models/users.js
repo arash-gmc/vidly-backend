@@ -1,5 +1,5 @@
-const Joi = require('joi')
 const mongoose = require('mongoose')
+const Joi = require('joi')
 const jwt = require('jsonwebtoken')
 const config = require('config')
 
@@ -23,7 +23,9 @@ const userSchema = new mongoose.Schema ({
 		maxlength : 1024,
 		required: true
 	},
-	isAdmin : Boolean
+	isAdmin : Boolean,
+	likedMovies : [mongoose.Schema.Types.ObjectId],
+	points: Object
 })
 
 

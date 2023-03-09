@@ -3,7 +3,8 @@ const winston = require('winston');
 const config = require('config')
 
 const db = config.get('db') 
-mongoose.connect(db)
+mongoose.connect(db,{useNewUrlParser:true,useUnifiedTopology:true})
 	.then(()=>winston.info(`connected to ${db}...`))
+	.catch(e=>console.error('database connection error: ',e))
 
 

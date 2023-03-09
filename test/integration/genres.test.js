@@ -1,7 +1,7 @@
 const request = require('supertest')
-const {Genres} = require('../../database/genres') 
+const {Genres} = require('../../models/genres') 
 const jwt = require('jsonwebtoken')
-const {Users} = require('../../database/users')
+const {Users} = require('../../models/users')
 let server;
 let token
 let name
@@ -69,8 +69,8 @@ describe('/api/genres',()=>{
 			expect(res.status).toBe(401)
 		})
 
-		it('should return a 400 error (bad request) if genre name was not valid',async()=>{
-			name='aaa'
+		it('should return a 400 error (bad request) if genre name has less than 3 character',async()=>{
+			name='aa'
 
 			const res = await exec()
 							

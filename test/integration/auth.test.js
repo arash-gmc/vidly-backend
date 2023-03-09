@@ -1,5 +1,5 @@
-const {Genres} = require('../../database/genres')
-const {Users} = require('../../database/users')
+const {Genres} = require('../../models/genres')
+const {Users} = require('../../models/users')
 const request = require('supertest')
 let server
 let token

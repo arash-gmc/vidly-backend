@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const Joi = require('Joi');
+const Joi = require('joi');
 const bcrypt = require('bcrypt')
-const {Users} = require('../database/users');
+const {Users} = require('../models/users');
 
 
 router.post('/',async (req,res)=>{

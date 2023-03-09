@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const Joi = require('joi')
 const {genresSchema,Genres} = require('./genres')
 
 
@@ -6,7 +7,8 @@ const moviesSchema = new mongoose.Schema({
 	title : {type:String, required:true, minlength:3, maxlength:64},
 	genre : {type: genresSchema, required:true},
 	numberInStock : {type:Number, required:true, max:255, min:0},
-	dailyRentalRate : {type:Number, required:true, max:255, min:0}
+	dailyRentalRate : {type:Number, required:true, max:255, min:0},
+	points : Object
 })
 
 

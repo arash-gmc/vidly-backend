@@ -1,8 +1,8 @@
 const request = require('supertest')
-const {Rentals} = require('../../database/rentals')
+const {Rentals} = require('../../models/rentals')
 const mongoose = require('mongoose')
-const {Users} = require('../../database/users')
-const {Movies} = require('../../database/movies')
+const {Users} = require('../../models/users')
+const {Movies} = require('../../models/movies')
 
 describe('',()=>{
 	let server

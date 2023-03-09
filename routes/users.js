@@ -3,9 +3,12 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const _ = require('lodash');
 const auth = require('../middlewares/auth')
+const admin = require('../middlewares/admin')
 const router = express.Router();
-const {joiSchema,Users} = require('../database/users')
+const {joiSchema,Users} = require('../models/users')
 const inpVal = require('../middlewares/inputValidation')
+const actions = require('../middlewares/userActions')
+const validateId = require('../middlewares/validateId')
 
 router.get('/me',auth,async(req,res)=>{
 	const id = req.user._id
@@ -29,15 +32,33 @@ router.post('/',inpVal(joiSchema),async (req,res)=>{
 		password : hashedPassword
 	})
 	
-	user = await user.save()
 	const token = user.generateToken()
 	const response =  _.pick(user,['_id','name','email'])
 		
 	res.header('x-auth-token',token).send(response)	
 })
 
-router.post('/action',async(req,res)=>{
-	res.send('hello beutiful')
+router.get('/',auth,admin,async (req,res)=>{
+	users = await Users.find().select('-password -__v')
+	res.send(users)
+})
+
+router.get('/:id',async (req,res)=>{
+	const {id} = req.params
+	const result = Users.countDocuments({_id:id})
+	res.send(result)
+})
+
+router.delete('/:id',auth,admin,validateId(Users),async (req,res)=>{
+	const user = res.instance
+	if (user.isAdmin)
+		return res.status(403).send('you can not remove an admin user')
+	const result = await Users.deleteOne({_id:user._id})
+	res.send(result)
+})
+
+router.post('/action',auth,async(req,res)=>{
+	await actions(req,res)	
 })
 
 module.exports = router

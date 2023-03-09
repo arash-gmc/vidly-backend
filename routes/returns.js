@@ -1,9 +1,9 @@
 const express = require('express')
-const Joi = require('Joi')
+const Joi = require('joi')
 const router = express.Router()
 const auth = require('../middlewares/auth')
-const {Rentals} = require('../database/rentals')
-const {Movies} = require('../database/movies')
+const {Rentals} = require('../models/rentals')
+const {Movies} = require('../models/movies')
 const inpVal = require('../middlewares/inputValidation')
 
 router.post('/',[auth,inpVal(schema)],async (req,res)=>{

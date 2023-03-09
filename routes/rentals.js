@@ -1,7 +1,7 @@
 const express = require('express')
-const Joi = require('Joi')
+const Joi = require('joi')
 const router = express.Router()
-const rentalsService = require('../database/rentals')
+const rentalsService = require('../models/rentals')
 
 
 

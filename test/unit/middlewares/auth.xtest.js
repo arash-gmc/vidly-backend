@@ -1,5 +1,5 @@
 const auth = require('../../../middlewares/auth')
-const {Users} = require('../../../database/users')
+const {Users} = require('../../../models/users')
 const mongoose = require('mongoose')
 
 describe('auth',()=>{

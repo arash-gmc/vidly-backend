@@ -1,2 +1,6 @@
 node_modules/
 coverage/
+test/
+logs.log
+mongodb command.text
+my-logs.log
