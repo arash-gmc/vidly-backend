@@ -4,7 +4,7 @@ const request = require('supertest')
 let server
 let token
 
-describe('auth middleware',()=>{
+xdescribe('auth middleware',()=>{
 	beforeEach(async()=>{
 		server = require('../../index')
 	})

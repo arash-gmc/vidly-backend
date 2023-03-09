@@ -12,7 +12,6 @@ const Customers = mongoose.model('Customers',customersSchema);
 function joiSchema(body){
 	return Joi.validate(body,{
 		name : Joi.string().min(3).required(),
-		isGold : Joi.boolean(),
 		phone : Joi.number().required()
 	})
 }

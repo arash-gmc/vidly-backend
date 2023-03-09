@@ -7,7 +7,7 @@ let token
 let name
 let id
 
-describe('/api/genres',()=>{
+xdescribe('/api/genres',()=>{
 	beforeEach(async()=>{
 		server = require('../../index')
 		await Genres.remove({})

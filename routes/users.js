@@ -31,6 +31,8 @@ router.post('/',inpVal(joiSchema),async (req,res)=>{
 		email,
 		password : hashedPassword
 	})
+
+	await user.save()
 	
 	const token = user.generateToken()
 	const response =  _.pick(user,['_id','name','email'])
@@ -43,7 +45,7 @@ router.get('/',auth,admin,async (req,res)=>{
 	res.send(users)
 })
 
-router.get('/:id',async (req,res)=>{
+router.get('/:id',validateId(Users),async (req,res)=>{
 	const {id} = req.params
 	const result = Users.countDocuments({_id:id})
 	res.send(result)
@@ -59,6 +61,13 @@ router.delete('/:id',auth,admin,validateId(Users),async (req,res)=>{
 
 router.post('/action',auth,async(req,res)=>{
 	await actions(req,res)	
+})
+
+router.put('/makeAdmin/:id',auth,admin,validateId(Users),async(req,res)=>{
+	const id = req.params.id
+	user = await Users.findByIdAndUpdate(id,{$set:{isAdmin:true}},{new:true})
+	
+	res.send({_id:user._id,name:user.name,email:user.email,isAdmin:user.isAdmin})
 })
 
 module.exports = router
